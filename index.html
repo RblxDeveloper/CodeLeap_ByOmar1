@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeLeap - Daily Coding Challenges</title>
+    <meta name="description" content="Sharpen your coding skills with interactive debugging challenges">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="light-theme">
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i data-lucide="key"></i>
+                </div>
+                <h2>Welcome to CodeLeap!</h2>
+                <p>Enter your Groq API key to start generating AI coding challenges</p>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="apiKeyInput">Groq API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="gsk_..." class="api-key-input">
+                </div>
+                
+                <div id="apiKeyError" class="error-message hidden">
+                    <i data-lucide="alert-triangle"></i>
+                    <span></span>
+                </div>
+
+                <div class="info-box info">
+                    <i data-lucide="info"></i>
+                    <div>
+                        <p><strong>Don't have an API key?</strong></p>
+                    </div>
+                </div>
+
+                <div class="info-box warning">
+                    <i data-lucide="credit-card"></i>
+                    <div>
+                        <p><strong>Free Tier Limits</strong></p>
+                        <p>Groq's free tier has rate limits. For higher limits:</p>
+                        <ul>
+                            <li>Upgrade to Groq Pro for higher rate limits</li>
+                            <li>Faster response times</li>
+                            <li>Priority access</li>
+                        </ul>
+                        <a href="https://console.groq.com/settings/billing" target="_blank" rel="noopener noreferrer">
+                            Upgrade here <i data-lucide="external-link"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <i data-lucide="check-circle"></i>
+                    <div>
+                        <p><strong>Your API key is stored locally</strong></p>
+                        <p>It's saved in your browser and never sent to our servers</p>
+                    </div>
+                </div>
+
+                <button id="saveApiKey" class="btn btn-primary btn-large" disabled>
+                    <i data-lucide="key"></i>
+                    Save API Key
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i data-lucide="code-2"></i>
+                    <div>
+                        <h1>CodeLeap</h1>
+                        <p>AI Coding Challenges</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="changeApiKey" class="btn btn-outline btn-small hidden">
+                        <i data-lucide="key"></i>
+                        Change API Key
+                    </button>
+                    <button id="themeToggle" class="btn btn-outline btn-icon">
+                        <i data-lucide="sun" class="sun-icon"></i>
+                        <i data-lucide="moon" class="moon-icon hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab-list">
+                    <button class="tab-trigger active" data-tab="challenge">
+                        <i data-lucide="target"></i>
+                        Challenge
+                    </button>
+                    <button class="tab-trigger" data-tab="history">
+                        <i data-lucide="history"></i>
+                        History
+                    </button>
+                </div>
+
+                <!-- Challenge Tab -->
+                <div id="challengeTab" class="tab-content active">
+                    <!-- Welcome Section -->
+                    <div id="welcomeSection" class="card welcome-card">
+                        <div class="card-header text-center">
+                            <h2><i data-lucide="brain"></i> Welcome to CodeLeap!</h2>
+                            <p>Test your coding skills with AI-generated challenges. Each challenge is unique and designed to help you learn and improve your programming knowledge.</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <i data-lucide="brain" class="feature-icon purple"></i>
+                                    <h3>AI Generated</h3>
+                                    <p>Unique challenges every time</p>
+                                </div>
+                                <div class="feature-card">
+                                    <i data-lucide="sparkles" class="feature-icon yellow"></i>
+                                    <h3>Always Different</h3>
+                                    <p>Never see the same challenge twice</p>
+                                </div>
+                                <div class="feature-card">
+                                    <i data-lucide="target" class="feature-icon blue"></i>
+                                    <h3>Multiple Languages</h3>
+                                    <p>JavaScript, HTML, and CSS</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading Ghost -->
+                    <div id="loadingGhost" class="card loading-card hidden">
+                        <div class="card-header">
+                            <div class="loading-header">
+                                <i data-lucide="brain" class="loading-icon"></i>
+                                <div class="skeleton skeleton-text-lg"></div>
+                            </div>
+                            <div class="loading-badges">
+                                <div class="skeleton skeleton-badge"></div>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                            <div class="skeleton skeleton-text"></div>
+                        </div>
+                        <div class="card-content">
+                            <div class="skeleton-code">
+                                <div class="skeleton skeleton-line"></div>
+                                <div class="skeleton skeleton-line short"></div>
+                                <div class="skeleton skeleton-line medium"></div>
+                                <div class="skeleton skeleton-line"></div>
+                                <div class="skeleton skeleton-line short"></div>
+                            </div>
+                            <div class="loading-message">
+                                <div class="ai-thinking">
+                                    <i data-lucide="brain" class="thinking-icon"></i>
+                                    <span>AI is thinking...</span>
+                                </div>
+                                <div class="loading-dots">
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <span>Generating unique code challenge...</span>
+                                </div>
+                                <p class="loading-note">This may take 10-30 seconds for high-quality results</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rate Limit Warning -->
+                    <div id="rateLimitWarning" class="card warning-card hidden">
+                        <div class="card-content">
+                            <div class="warning-header">
+                                <i data-lucide="credit-card"></i>
+                                <span>Groq API Rate Limit Reached</span>
+                                <div id="generationTime" class="time-badge hidden">
+                                    <i data-lucide="clock"></i>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="warning-content">
+                                <p>Your Groq API has reached its rate limit. To continue generating AI challenges:</p>
+                                <ul>
+                                    <li>Wait for the rate limit to reset</li>
+                                    <li>Upgrade to Groq Pro for higher limits</li>
+                                    <li>Get faster response times</li>
+                                </ul>
+                                <div class="warning-actions">
+                                    <a href="https://console.groq.com/settings/billing" target="_blank" rel="noopener noreferrer" class="upgrade-link">
+                                        <i data-lucide="credit-card"></i>
+                                        Upgrade Plan
+                                        <i data-lucide="external-link"></i>
+                                    </a>
+                                    <span>•</span>
+                                    <span>Using curated challenge instead</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generation Error -->
+                    <div id="generationError" class="card error-card hidden">
+                        <div class="card-content">
+                            <div class="error-header">
+                                <i data-lucide="alert-circle"></i>
+                                <span id="errorTitle">AI Issue</span>
+                                <div id="errorTime" class="time-badge hidden">
+                                    <i data-lucide="clock"></i>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <p id="errorMessage"></p>
+                        </div>
+                    </div>
+
+                    <!-- Challenge Controls -->
+                    <div id="challengeControls" class="card">
+                        <div class="card-header">
+                            <h2><i data-lucide="brain"></i> Generate <span id="languageDisplay">JAVASCRIPT</span> Challenge</h2>
+                            <p>Create a unique <span id="languageText">javascript</span> challenge at <span id="difficultyText">easy</span> difficulty</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="controls-grid">
+                                <div class="control-group">
+                                    <label>Difficulty</label>
+                                    <select id="difficultySelect" class="select">
+                                        <option value="easy">🟢 Easy - Basic concepts</option>
+                                        <option value="medium">🟡 Medium - Intermediate</option>
+                                        <option value="hard">🔴 Hard - Advanced</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Language</label>
+                                    <select id="languageSelect" class="select">
+                                        <option value="javascript">🟨 JavaScript</option>
+                                        <option value="html">🟧 HTML</option>
+                                        <option value="css">🟦 CSS</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button id="generateChallenge" class="btn btn-primary btn-large">
+                                <i data-lucide="brain"></i>
+                                Generate Challenge
+                            </button>
+                            <p id="apiKeyRequired" class="api-key-note hidden">Please set your API key to generate challenges</p>
+                        </div>
+                    </div>
+
+                    <!-- Current Challenge -->
+                    <div id="currentChallenge" class="card challenge-card hidden">
+                        <div class="card-header challenge-header">
+                            <div class="challenge-title">
+                                <i data-lucide="code"></i>
+                                <span>Code Challenge</span>
+                            </div>
+                            <div class="challenge-badges">
+                                <div class="language-badge">
+                                    <span id="challengeLanguageIcon">🟨</span>
+                                    <span id="challengeLanguage">JavaScript</span>
+                                </div>
+                                <div id="challengeDifficulty" class="difficulty-badge easy">EASY</div>
+                            </div>
+                            <p id="challengeProblem" class="challenge-description"></p>
+                        </div>
+                        <div class="card-content">
+                            <!-- Code Display -->
+                            <div class="code-section">
+                                <h3><i data-lucide="code"></i> Code to Analyze</h3>
+                                <div id="codeDisplay" class="code-block"></div>
+                            </div>
+
+                            <!-- Code Explanation -->
+                            <div class="explanation-box">
+                                <div class="explanation-header">
+                                    <i data-lucide="info"></i>
+                                    <span>What this code does:</span>
+                                </div>
+                                <p id="codeExplanation"></p>
+                            </div>
+
+                            <!-- HTML Preview -->
+                            <div id="htmlPreview" class="preview-section hidden">
+                                <div class="preview-header">
+                                    <div class="preview-title">
+                                        <i data-lucide="eye"></i>
+                                        <span>Live Preview</span>
+                                    </div>
+                                    <button id="expandPreview" class="btn btn-outline btn-small">
+                                        <i data-lucide="external-link"></i>
+                                        <span>Expand</span>
+                                    </button>
+                                </div>
+                                <div class="preview-container">
+                                    <div class="preview-browser">
+                                        <div class="browser-controls">
+                                            <div class="browser-dots">
+                                                <div class="dot red"></div>
+                                                <div class="dot yellow"></div>
+                                                <div class="dot green"></div>
+                                            </div>
+                                            <span class="browser-title">preview.html</span>
+                                        </div>
+                                        <iframe id="previewFrame" class="preview-frame" sandbox="allow-same-origin allow-forms"></iframe>
+                                    </div>
+                                </div>
+                                <div class="preview-note">
+                                    <i data-lucide="alert-triangle"></i>
+                                    <span>Preview runs in a sandboxed environment for security</span>
+                                </div>
+                            </div>
+
+                            <div class="separator"></div>
+
+                            <!-- Answer Buttons -->
+                            <div id="answerButtons" class="answer-section">
+                                <p class="answer-question">Is this code correct?</p>
+                                <div class="answer-buttons">
+                                    <button id="correctBtn" class="btn btn-answer btn-correct">
+                                        <i data-lucide="check-circle"></i>
+                                        Correct
+                                    </button>
+                                    <button id="incorrectBtn" class="btn btn-answer btn-incorrect">
+                                        <i data-lucide="x-circle"></i>
+                                        Incorrect
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Answer Reveal -->
+                            <div id="answerReveal" class="answer-reveal hidden">
+                                <div class="separator"></div>
+                                
+                                <!-- User's Answer Result -->
+                                <div id="userResult" class="result-box">
+                                    <div class="result-header">
+                                        <i id="resultIcon" data-lucide="check-circle"></i>
+                                        <span id="resultText">🎉 Correct!</span>
+                                    </div>
+                                    <div class="result-details">
+                                        <div class="result-item">
+                                            <span>Your answer:</span>
+                                            <div id="userAnswerBadge" class="result-badge correct">Correct</div>
+                                        </div>
+                                        <div class="result-item">
+                                            <span>Actual result:</span>
+                                            <div id="actualAnswerBadge" class="result-badge correct">Correct</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Detailed Explanation -->
+                                <div class="detailed-explanation">
+                                    <h4 id="explanationTitle">✅ Why it's correct:</h4>
+                                    <p id="explanationText"></p>
+                                    
+                                    <div id="additionalInfo" class="additional-info hidden">
+                                        <h5>💡 Additional Information:</h5>
+                                        <p id="additionalInfoText"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="historyTab" class="tab-content">
+                    <!-- Stats Overview -->
+                    <div id="statsCard" class="card">
+                        <div class="card-header">
+                            <h2>Your Progress</h2>
+                            <p>Overall statistics and performance</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div id="totalChallenges" class="stat-number">0</div>
+                                    <div class="stat-label">Total Challenges</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div id="accuracyPercent" class="stat-number accuracy">0%</div>
+                                    <div class="stat-label">Accuracy</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div id="correctAnswers" class="stat-number correct">0</div>
+                                    <div class="stat-label">Correct</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div id="incorrectAnswers" class="stat-number incorrect">0</div>
+                                    <div class="stat-label">Incorrect</div>
+                                </div>
+                            </div>
+                            
+                            <div class="separator"></div>
+                            
+                            <div class="breakdown-grid">
+                                <div class="breakdown-section">
+                                    <h4>By Difficulty</h4>
+                                    <div class="breakdown-list">
+                                        <div class="breakdown-item">
+                                            <span class="breakdown-label"><div class="dot green"></div> Easy</span>
+                                            <span id="easyCount">0</span>
+                                        </div>
+                                        <div class="breakdown-item">
+                                            <span class="breakdown-label"><div class="dot yellow"></div> Medium</span>
+                                            <span id="mediumCount">0</span>
+                                        </div>
+                                        <div class="breakdown-item">
+                                            <span class="breakdown-label"><div class="dot red"></div> Hard</span>
+                                            <span id="hardCount">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="breakdown-section">
+                                    <h4>By Language</h4>
+                                    <div class="breakdown-list">
+                                        <div class="breakdown-item">
+                                            <span class="breakdown-label">🟨 JavaScript</span>
+                                            <span id="jsCount">0</span>
+                                        </div>
+                                        <div class="breakdown-item">
+                                            <span class="breakdown-label">🟧 HTML</span>
+                                            <span id="htmlCount">0</span>
+                                        </div>
+                                        <div class="breakdown-item">
+                                            <span class="breakdown-label">🟦 CSS</span>
+                                            <span id="cssCount">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Challenge History -->
+                    <div id="historyCard" class="card">
+                        <div class="card-header">
+                            <h2><i data-lucide="clock"></i> Recent Challenges</h2>
+                            <p>Your completed challenges</p>
+                        </div>
+                        <div class="card-content">
+                            <div id="historyList" class="history-list">
+                                <div id="emptyHistory" class="empty-state">
+                                    <i data-lucide="code" class="empty-icon"></i>
+                                    <p>No challenges completed yet.</p>
+                                    <p class="empty-subtitle">Generate your first challenge to get started!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
