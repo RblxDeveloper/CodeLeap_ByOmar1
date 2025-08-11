@@ -29,7 +29,6 @@ import {
   AlertCircle,
   Clock,
   CreditCard,
-  ExternalLink,
   Settings,
   Key,
   Eye,
@@ -162,7 +161,7 @@ export default function CodeLeapApp() {
       // Check for rate limit error
       if (challenge.isRateLimit) {
         setIsRateLimited(true)
-        setGenerationError("Rate limit exceeded for free tier")
+        setGenerationError("Rate limit exceeded")
         setIsUsingFallback(true)
       } else if (challenge.fallbackUsed) {
         setIsUsingFallback(true)
@@ -248,20 +247,9 @@ export default function CodeLeapApp() {
                 <DialogHeader>
                   <DialogTitle className="flex items-center space-x-2">
                     <Key className="h-5 w-5" />
-                    <span>Groq API Key</span>
+                    <span>API Key</span>
                   </DialogTitle>
-                  <DialogDescription>
-                    Enter your Groq API key to generate AI-powered coding challenges. Get your free API key from{" "}
-                    <a
-                      href="https://console.groq.com/keys"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline inline-flex items-center"
-                    >
-                      Groq Console
-                      <ExternalLink className="h-3 w-3 ml-1" />
-                    </a>
-                  </DialogDescription>
+                  <DialogDescription>Enter your API key to generate AI-powered coding challenges.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -314,8 +302,6 @@ export default function CodeLeapApp() {
 
                   <div className="text-xs text-muted-foreground space-y-1">
                     <p>• Your API key is stored locally in your browser</p>
-                    <p>• Free tier includes 14,400 requests per day</p>
-                    <p>• Upgrade to Groq Pro for higher limits</p>
                   </div>
                 </div>
               </DialogContent>
@@ -348,7 +334,7 @@ export default function CodeLeapApp() {
                     <span className="font-medium">API Key Required</span>
                   </div>
                   <div className="text-sm text-blue-700 dark:text-blue-300 space-y-2">
-                    <p>To generate AI-powered coding challenges, you need a free Groq API key.</p>
+                    <p>To generate AI-powered coding challenges, you need an API key.</p>
                     <div className="flex items-center space-x-4 mt-3">
                       <Button
                         onClick={() => setShowApiKeyDialog(true)}
@@ -358,15 +344,6 @@ export default function CodeLeapApp() {
                         <Key className="h-4 w-4 mr-2" />
                         Add API Key
                       </Button>
-                      <a
-                        href="https://console.groq.com/keys"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-1 text-blue-600 dark:text-blue-400 hover:underline text-sm"
-                      >
-                        <span>Get Free API Key</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
                     </div>
                   </div>
                 </CardContent>
@@ -418,7 +395,7 @@ export default function CodeLeapApp() {
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-2 text-orange-600 dark:text-orange-400 mb-3">
                     <CreditCard className="h-5 w-5" />
-                    <span className="font-medium">Groq API Rate Limit Reached</span>
+                    <span className="font-medium">Rate Limit Reached</span>
                     {generationTime && (
                       <Badge variant="outline" className="ml-2">
                         <Clock className="h-3 w-3 mr-1" />
@@ -427,23 +404,12 @@ export default function CodeLeapApp() {
                     )}
                   </div>
                   <div className="text-sm text-orange-700 dark:text-orange-300 space-y-2">
-                    <p>Your Groq API has reached its rate limit. To continue generating AI challenges:</p>
+                    <p>Your API has reached its rate limit. To continue generating AI challenges:</p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
                       <li>Wait for the rate limit to reset</li>
-                      <li>Upgrade to Groq Pro for higher limits</li>
                       <li>Get faster response times</li>
                     </ul>
                     <div className="flex items-center space-x-4 mt-3">
-                      <a
-                        href="https://console.groq.com/settings/billing"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-1 text-orange-600 dark:text-orange-400 hover:underline font-medium"
-                      >
-                        <CreditCard className="h-4 w-4" />
-                        <span>Upgrade Plan</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
                       <span className="text-orange-600 dark:text-orange-400">•</span>
                       <span className="text-sm">Using curated challenge instead</span>
                     </div>
@@ -568,7 +534,7 @@ export default function CodeLeapApp() {
                   </Button>
                   {!apiKey && (
                     <p className="text-sm text-muted-foreground text-center">
-                      Please add your Groq API key to generate challenges
+                      Please add your API key to generate challenges
                     </p>
                   )}
                 </CardContent>
